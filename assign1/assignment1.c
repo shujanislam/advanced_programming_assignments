@@ -1,38 +1,59 @@
 #include <stdio.h>
+#include <time.h>
 
-void constant_space() {
-    int a = 1, b = 2, c = 3;
-    (void)a; (void)b; (void)c;
+unsigned long long sink = 0;
+
+void constant_time(int n) {
+    sink += 1;
+    sink += 2;
+    sink += 3;
+    sink += 4;
 }
 
-void linear_space(int n) {
-    int a[n];
-    a[0] = 1;
+void linear_time(int n) {
+    int i;
+    for (i = 0; i < n; i++) {
+        sink += i;
+    }
 }
 
-void quadratic_space(int n) {
-    int a[n][n];
-    a[0][0] = 1;
+void quadratic_time(int n) {
+    int i, j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            sink += i + j;
+        }
+    }
+}
+
+double measure(void (*func)(int), int n, int repeat) {
+    clock_t start, end;
+    int r;
+
+    start = clock();
+    for (r = 0; r < repeat; r++) {
+        func(n);
+    }
+    end = clock();
+
+    return (double)(end - start) / CLOCKS_PER_SEC;
 }
 
 int main() {
-    int sizes[] = {10, 50, 100, 200, 300};
+    int sizes[] = {100, 500, 1000, 2000, 4000};
     int i;
+    int repeat = 100;
 
-    printf("n\tO(1) bytes\tO(n) bytes\tO(n^2) bytes\n");
+    printf("Input Size\tO(1)\t\tO(n)\t\tO(n^2)\n");
 
     for (i = 0; i < 5; i++) {
         int n = sizes[i];
 
-        constant_space();
-        linear_space(n);
-        quadratic_space(n);
+        double t1 = measure(constant_time, n, repeat);
+        double t2 = measure(linear_time, n, repeat);
+        double t3 = measure(quadratic_time, n, repeat);
 
-        printf("%d\t%d\t\t%d\t\t%d\n",
-               n,
-               3 * (int)sizeof(int),
-               n * (int)sizeof(int),
-               n * n * (int)sizeof(int));
+        printf("%d\t\t%f\t%f\t%f\n", n, t1, t2, t3);
     }
 
     return 0;
