@@ -1,0 +1,20 @@
+# Binary and executable outputs
+*.bin
+*.exe
+*.out
+*.o
+*.so
+*.dll
+*.dylib
+bin/
+**/bin/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Node dependencies
+node_modules/
+**/node_modules/
