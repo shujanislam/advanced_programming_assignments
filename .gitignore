@@ -20,3 +20,4 @@ node_modules/
 **/node_modules/
 
 push_all_branches.sh
+add_assignment_questions.sh
